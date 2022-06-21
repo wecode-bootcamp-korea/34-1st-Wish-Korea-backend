@@ -23,21 +23,18 @@ class Product(TimeStampModel):
     is_vegan         = models.BooleanField(default = False)
     is_only_online   = models.BooleanField(default = False)
     is_made_in_korea = models.BooleanField(default = False)
-    content          = models.TextField(max_length = 2000, null =True)
-    manual           = models.TextField(max_length = 2000, null = True)
-    tag              = models.CharField(max_length = 200, null = True)
+    content          = models.TextField(max_length = 2000, blank =True)
+    manual           = models.TextField(max_length = 2000, blank = True)
+    tag              = models.CharField(max_length = 200, blank = True)
     sub_category     = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
-    image_url_id     = models.ForeignKey('Image_url', on_delete = models.SET_NULL, nulle = True)
-    component        = models.ManyToManyField('Components', 
-                                              through        = 'ProductComponent', 
-                                              through_fields = ('product_id','component_id'), 
-                                              null           = True)
+    component        = models.ManyToManyField('Component', through = 'ProductComponent', through_fields = ('product','component'))
 
     class Meta:
         db_table = 'products'
 
 class ImgaeUrl(models.Model):
     url = models.CharField(max_length = 255)
+    product = models.ForeignKey('Product', on_delete = models.CASCADE)
 
     class Meta:
         db_table = 'image_urls'
@@ -57,7 +54,7 @@ class ProductComponent(models.Model):
         db_table = 'product_component'
 
 class Item(TimeStampModel):
-    price     = models.DecimalField(max_digitx = 9,decimal_places = 2)
+    price     = models.DecimalField(max_digits = 9, decimal_places = 2)
     stock     = models.IntegerField(default=0)
     image_url = models.CharField(max_length = 255)
     product   = models.ForeignKey('Product', on_delete = models.CASCADE)
@@ -65,3 +62,9 @@ class Item(TimeStampModel):
 
     class Meta:
         db_table = 'items'
+
+class Size(models.Model):
+    size_g = models.IntegerField()
+
+    class Meta:
+        db_table = 'sizes'
