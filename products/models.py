@@ -1,6 +1,8 @@
 from django.db import models
 
-from core.models import TimeStampModel
+from core.models   import TimeStampModel
+from users.models  import User
+from orders.models import Cart
 
 class Category(models.Model):
     name = models.CharField(max_length = 100)
@@ -59,6 +61,7 @@ class Item(TimeStampModel):
     image_url = models.CharField(max_length = 255)
     product   = models.ForeignKey('Product', on_delete = models.CASCADE)
     size      = models.ForeignKey('Size', on_delete = models.SET_NULL, null = True)
+    cart      = models.ManyToManyField('users.User', through = 'Cart', through_fields = ('item', 'user'))
 
     class Meta:
         db_table = 'items'
