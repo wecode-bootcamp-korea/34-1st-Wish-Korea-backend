@@ -9,8 +9,8 @@ class User(TimeStampModel):
     phone_number = models.CharField(max_length = 50, unique = True)
     first_name   = models.CharField(max_length = 50)
     last_name    = models.CharField(max_length = 50)
-    adress       = models.CharField(max_length = 200, blank = True)
-    nick_name    = models.CharField(max_length = 50, blank = True)
+    adress       = models.CharField(max_length = 200, default = '')
+    nick_name    = models.CharField(max_length = 50, default = '')
 
     class Meta:
         db_table = 'users'

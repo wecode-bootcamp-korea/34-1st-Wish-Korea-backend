@@ -7,15 +7,16 @@ from core.models import TimeStampModel
 class Cart(models.Model):
     user     = models.ForeignKey('users.User', on_delete = models.CASCADE)
     item     = models.ForeignKey('products.Item', on_delete = models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default = 1)
 
     class Meta:
         db_table = 'carts'
 
+        
 class OrderItem(models.Model):
     user     = models.ForeignKey('users.User', on_delete = models.CASCADE)
     item     = models.ForeignKey('products.Item', on_delete = models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default = 1)
     order    = models.ForeignKey('Order', on_delete = models.CASCADE)
 
     class Meta:
@@ -39,7 +40,7 @@ class Customer(TimeStampModel):
 
 class Order(TimeStampModel):
     order_number = models.UUIDField(default = uuid.uuid4)
-    message      = models.CharField(max_length = 255)
+    message      = models.CharField(max_length = 255, default = '')
     customer     = models.ForeignKey('Customer', on_delete = models.SET_NULL, null = True)
     status       = models.ForeignKey('Status', on_delete = models.SET_NULL, null = True)
     item         = models.ManyToManyField('products.Item', through = 'OrderItem', through_fields = ('order', 'item'))

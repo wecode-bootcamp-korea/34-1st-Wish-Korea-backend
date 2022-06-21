@@ -10,8 +10,8 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     name      = models.CharField(max_length = 100)
-    content   = models.CharField(max_length = 255)
-    image_url = models.CharField(max_length = 255)
+    content   = models.CharField(max_length = 255, default = '')
+    image_url = models.CharField(max_length = 255, default = '')
     category  = models.ForeignKey('Category', on_delete = models.CASCADE)
 
     class Meta:
@@ -23,9 +23,9 @@ class Product(TimeStampModel):
     is_vegan         = models.BooleanField(default = False)
     is_only_online   = models.BooleanField(default = False)
     is_made_in_korea = models.BooleanField(default = False)
-    content          = models.TextField(max_length = 2000, blank =True)
-    manual           = models.TextField(max_length = 2000, blank = True)
-    tag              = models.CharField(max_length = 200, blank = True)
+    content          = models.TextField(max_length = 2000, blank =True, default = '')
+    manual           = models.TextField(max_length = 2000, blank = True, default = '')
+    tag              = models.CharField(max_length = 200, blank = True, default = '')
     sub_category     = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
     component        = models.ManyToManyField('Component', through = 'ProductComponent', through_fields = ('product','component'))
 
@@ -33,7 +33,7 @@ class Product(TimeStampModel):
         db_table = 'products'
 
 class ImgaeUrl(models.Model):
-    url     = models.CharField(max_length = 255)
+    url     = models.CharField(max_length = 255, default = '')
     product = models.ForeignKey('Product', on_delete = models.CASCADE)
 
     class Meta:
@@ -54,9 +54,9 @@ class ProductComponent(models.Model):
         db_table = 'product_component'
 
 class Item(TimeStampModel):
-    price     = models.DecimalField(max_digits = 9, decimal_places = 2)
+    price     = models.DecimalField(max_digits = 9, decimal_places = 2, default = 0.00)
     stock     = models.IntegerField(default=0)
-    image_url = models.CharField(max_length = 255)
+    image_url = models.CharField(max_length = 255, default = '')
     product   = models.ForeignKey('Product', on_delete = models.CASCADE)
     size      = models.ForeignKey('Size', on_delete = models.SET_NULL, null = True)
 
