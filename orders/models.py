@@ -41,9 +41,15 @@ class Customer(TimeStampModel):
 
 class Order(TimeStampModel):
     order_number = models.UUIDField(default = uuid.uuid4)
-    message      = models.CharField()
+    message      = models.CharField(max_length = 255)
     customer     = models.ForeignKey('Customer', on_delete = models.SET_NULL, null = True)
     status       = models.ForeignKey('Status', on_delete = models.SET_NULL, null = True)
 
     class Meta:
         db_table = 'orders'
+
+class Status(models.Model):
+    status = models.CharField(max_length = 200)
+
+    class Meta:
+        db_table = 'statuses'
