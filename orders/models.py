@@ -2,8 +2,6 @@ import uuid
 
 from django.db import models
 
-from users.models       import User
-from products.models    import Item
 from core.models        import TimeStampModel
 
 class Cart(models.Model):
@@ -45,8 +43,7 @@ class Order(TimeStampModel):
     customer     = models.ForeignKey('Customer', on_delete = models.SET_NULL, null = True)
     status       = models.ForeignKey('Status', on_delete = models.SET_NULL, null = True)
     item         = models.ManyToManyField('products.Item', through = 'OrderItem', through_fields = ('order', 'item'))
-    user         = models.ManyToManyField('products.Item', through = 'OrderItem', through_fields = ('order', 'user'))
-
+    user         = models.ManyToManyField('users.User', through = 'OrderItem', through_fields = ('order', 'user'))
 
     class Meta:
         db_table = 'orders'
