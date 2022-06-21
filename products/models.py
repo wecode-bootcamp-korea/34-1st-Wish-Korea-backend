@@ -33,7 +33,7 @@ class Product(TimeStampModel):
         db_table = 'products'
 
 class ImgaeUrl(models.Model):
-    url = models.CharField(max_length = 255)
+    url     = models.CharField(max_length = 255)
     product = models.ForeignKey('Product', on_delete = models.CASCADE)
 
     class Meta:
