@@ -27,7 +27,11 @@ class Product(TimeStampModel):
     manual           = models.TextField(max_length = 2000, default = '')
     tag              = models.CharField(max_length = 200, default = '')
     sub_category     = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
-    component        = models.ManyToManyField('Component', through = 'ProductComponent', through_fields = ('product','component'))
+    component        = models.ManyToManyField(
+        'Component', 
+        through = 'ProductComponent', 
+        through_fields = ('product','component')
+        )
 
     class Meta:
         db_table = 'products'
