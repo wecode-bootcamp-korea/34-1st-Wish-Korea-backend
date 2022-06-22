@@ -36,9 +36,3 @@ def validate_phone_number(value):
 
     if not re.match(PHONE_NUMBER_REGEX ,value):
         raise ValidationError(message = 'Invalid PhoneNumber')
-
-def validate_url(value):
-    URL_REGEX = '^https?://[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/[a-zA-Z0-9-_/=.?]*'
-
-    if not re.match(URL_REGEX, value):
-        raise ValidationError(message = 'Invalid_Url')
