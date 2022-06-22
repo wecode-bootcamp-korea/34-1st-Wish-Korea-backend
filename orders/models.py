@@ -43,7 +43,7 @@ class Order(TimeStampModel):
     customer     = models.ForeignKey('Customer', on_delete = models.SET_NULL, null = True)
     status       = models.ForeignKey('OrderStatus', on_delete = models.SET_NULL, null = True)
     item         = models.ManyToManyField('products.Item', through = 'OrderItem', through_fields = ('order', 'item'))
-    user         = models.ForeignKey('users.User', on_delete = models.PROTECT)
+    user         = models.ForeignKey('users.User', on_delete = models.PROTECT, null = True)
     
     class Meta:
         db_table = 'orders'
