@@ -45,7 +45,7 @@ class SignUpView(View):
 
             User.objects.create(
                 username     = username,
-                pasword      = hashed_password,
+                password      = hashed_password,
                 email        = email,
                 phone_number = phone_number,
                 last_name    = last_name,
