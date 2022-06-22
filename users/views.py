@@ -6,8 +6,8 @@ from django.http            import JsonResponse
 from django.views           import View
 from django.core.exceptions import ValidationError
 
-from users.models           import User
-from core.validators         import (
+from users.models    import User
+from core.validators import (
     validate_names,
     validate_email,
     validate_password,
