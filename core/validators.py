@@ -3,9 +3,9 @@ import re
 from django.core.exceptions import ValidationError
 
 def validate_names(username, nick_name, last_name, first_name):
-    USERNAME_REGEX  = '[가-힣a-zA-Z0-9]+'
-    NICK_NAME_REGEX = '[가-힣a-zA-Z0-9]*'
-    NAMES_REGEX     = '[가-힣a-zA-Z]+'
+    USERNAME_REGEX  = '^[가-힣a-zA-Z0-9]+$'
+    NICK_NAME_REGEX = '^[가-힣a-zA-Z0-9]*$'
+    NAMES_REGEX     = '^[가-힣a-zA-Z]+$'
 
     if not re.match(USERNAME_REGEX, username):
         raise ValidationError(message = 'Invalid Username')
