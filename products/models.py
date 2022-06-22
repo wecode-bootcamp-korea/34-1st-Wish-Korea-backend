@@ -23,9 +23,9 @@ class Product(TimeStampModel):
     is_vegan         = models.BooleanField(default = False)
     is_only_online   = models.BooleanField(default = False)
     is_made_in_korea = models.BooleanField(default = False)
-    content          = models.TextField(max_length = 2000, blank =True, default = '')
-    manual           = models.TextField(max_length = 2000, blank = True, default = '')
-    tag              = models.CharField(max_length = 200, blank = True, default = '')
+    content          = models.TextField(max_length = 2000, default = '')
+    manual           = models.TextField(max_length = 2000, default = '')
+    tag              = models.CharField(max_length = 200, default = '')
     sub_category     = models.ForeignKey('SubCategory', on_delete = models.SET_NULL, null = True)
     component        = models.ManyToManyField('Component', through = 'ProductComponent', through_fields = ('product','component'))
 

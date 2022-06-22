@@ -14,7 +14,6 @@ class Cart(models.Model):
 
         
 class OrderItem(models.Model):
-    user     = models.ForeignKey('users.User', on_delete = models.CASCADE)
     item     = models.ForeignKey('products.Item', on_delete = models.CASCADE)
     quantity = models.IntegerField(default = 1)
     order    = models.ForeignKey('Order', on_delete = models.CASCADE)
@@ -42,15 +41,9 @@ class Order(TimeStampModel):
     order_number = models.UUIDField(default = uuid.uuid4)
     message      = models.CharField(max_length = 255, default = '')
     customer     = models.ForeignKey('Customer', on_delete = models.SET_NULL, null = True)
-    status       = models.ForeignKey('Status', on_delete = models.SET_NULL, null = True)
+    status       = models.ForeignKey('OrderStatus', on_delete = models.SET_NULL, null = True)
     item         = models.ManyToManyField('products.Item', through = 'OrderItem', through_fields = ('order', 'item'))
-    user         = models.ManyToManyField('users.User', through = 'OrderItem', through_fields = ('order', 'user'))
-
+    user         = models.ForeignKey('users.User', on_delete = models.PROTECT)
+    
     class Meta:
         db_table = 'orders'
-
-class Status(models.Model):
-    status = models.CharField(max_length = 200)
-
-    class Meta:
-        db_table = 'statuses'
