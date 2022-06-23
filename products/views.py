@@ -62,10 +62,8 @@ class ListView(View):
                 if len(product.item_set.all()) == 1:
                     result['products'][idx]['name'] = name
                 else:
-                    sizes = [size_value.size.size_g for size_value in product.item_set.all()]
+                    sizes = sorted([size_value.size.size_g for size_value in product.item_set.all()])
                     name  = product.name
-
-                    sizes.sort()
 
                     for size in sizes:
                         name += '/' + str(size) + 'g'
