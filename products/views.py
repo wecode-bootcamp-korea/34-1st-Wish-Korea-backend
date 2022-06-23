@@ -8,22 +8,17 @@ from products.models import Category, SubCategory
 class NavigatorView(View):
     def get(self, request):
         categories     = Category.objects.all()
-        sub_categories = SubCategory.objects.all()
-        result  = []
-        result2 = []
-
-        for category in categories:
-            result2 = []
-            for sub_category in sub_categories.filter(category_id = category.id):
-                result2.append({
-                    'id'   : sub_category.name,
-                    'name' : sub_category.name
-                })
-            result.append(
-                {'category'    : category.id,
+        result = [
+            {
+                'category_id'  : category.id, 
                 'name'         : category.name,
-                'sub_category' : result2
-                }
-            )
+                'sub_cateogry' : [
+                    {
+                        'id'   : sub_category.id,
+                        'name' : sub_category.name
+                    } for sub_category in category.subcategory_set.all()
+                ] 
+            } for category in categories
+        ]
 
         return JsonResponse({'result' : result}, status = 200)
