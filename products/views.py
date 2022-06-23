@@ -38,7 +38,7 @@ class ProductView(View):
                 'name'                 : None,
                 'tag'                  : product.tag,
                 'image'                : [url for url in product.imgaeurl_set.all()],
-                'menual'               : product.manual,
+                'manual'               : product.manual,
                 'content'              : product.content,
                 'important_components' : [
                     {
