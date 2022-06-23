@@ -28,5 +28,8 @@ class NavigatorView(View):
 
         return JsonResponse({'result' : result}, status = 200)
 
-    class ListView(View):
+class ListView(View):
+    def get(requst, id):
         products = Product.objects.all()
+        result = []
+        
