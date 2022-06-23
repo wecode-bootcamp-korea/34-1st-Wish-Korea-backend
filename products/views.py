@@ -3,7 +3,8 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models import Category
+from products.models       import Product
+from core.token_validators import token_validator
 
 class CategoryView(View):
     def get(self, request):
@@ -22,3 +23,7 @@ class CategoryView(View):
         ]
 
         return JsonResponse({'result' : result}, status = 200)
+
+@token_validator
+class ProductView(View):
+    def get()
