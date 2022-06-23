@@ -58,8 +58,9 @@ class ProductView(View):
                 
                 for i in size_values:
                     name += '/' + str(i) + 'g'
-                name = name.replace(f'{product.name}/', f'{product.name} ')
-                result['products'][idx].setdefault('name', name)
+
+                name           = name.replace(f'{product.name}/', f'{product.name} ')
+                result['name'] = name
         
             
             
