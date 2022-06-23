@@ -51,11 +51,11 @@ class ProductView(View):
             }
 
             if len(product.item_set.all()) == 1:
-                result['products'][idx].setdefault('name', name)
+                result['name'] = product.name
             else:
-                size_values = [size_value.size.size_g for size_value in product.item_set.all()]
-                name       = product.name
-                size_values.sort()
+                size_values = sorted([size_value.size.size_g for size_value in product.item_set.all()])
+                name        = product.name
+                
                 for i in size_values:
                     name += '/' + str(i) + 'g'
                 name = name.replace(f'{product.name}/', f'{product.name} ')
