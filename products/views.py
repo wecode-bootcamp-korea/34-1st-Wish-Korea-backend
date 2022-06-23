@@ -46,6 +46,7 @@ class ListView(View):
                 'products' : [
                     {
                         'id'               : product.id,
+                        'name'             : None,
                         'tag'              : product.tag,
                         'is_new'           : product.is_new,
                         'is_vegan'         : product.is_vegan,
@@ -59,7 +60,7 @@ class ListView(View):
 
             for idx, product in enumerate(products):
                 if len(product.item_set.all()) == 1:
-                    result['products'][idx].setdefault('name', name)
+                    result['products'][idx]['name'] = name
                 else:
                     sizes = [size_value.size.size_g for size_value in product.item_set.all()]
                     name  = product.name
@@ -70,7 +71,7 @@ class ListView(View):
                         name += '/' + str(size) + 'g'
 
                     name = name.replace(f'{product.name}/', f'{product.name} ')
-                    result['products'][idx].setdefault('name', name)
+                    result['products'][idx]['name'] = name
 
             return JsonResponse({'result' : result}, status = 200)
         
