@@ -3,7 +3,7 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models import Category, SubCategory, Product, Size
+from products.models import Category, SubCategory
 
 class CategoryView(View):
     def get(self, request):
@@ -32,15 +32,15 @@ class ListView(View):
             products        = sub_category.product_set.all()
             
             result = {
-                'sub_cateogry_id'      : sub_category.id,
-                'sub_category_name'    : sub_category.name,
-                'content'              : sub_category.content,
-                'image_url'            : sub_category.image_url, 
-                'sub_categories'       : [
+                'sub_cateogry_id' : sub_category.id,
+                'name'            : sub_category.name,
+                'content'         : sub_category.content,
+                'image_url'       : sub_category.image_url, 
+                'sub_categories'  : [
                     {
-                        'id'           : category.id, 
-                        'name'         : category.name,
-                        'product_count': category.product_set.count()
+                        'id'            : category.id, 
+                        'name'          : category.name,
+                        'product_count' : category.product_set.count()
                     } for category in sub_category.category.subcategory_set.all()
                 ],      
                 'products' : [
