@@ -75,7 +75,7 @@ class ListView(View):
             return JsonResponse({'result' : result}, status = 200)
         
         except KeyError:
-            return JsonResponse({'message':'Key Error'}, status = 400)
+            return JsonResponse({'message' : 'Key Error'}, status = 400)
 
         except SubCategory.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Category'}, status = 400)
