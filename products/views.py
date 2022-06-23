@@ -3,9 +3,9 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models import Category, SubCategory
+from products.models import Category
 
-class NavigatorView(View):
+class CategoryView(View):
     def get(self, request):
         categories     = Category.objects.all()
         result = [
