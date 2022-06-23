@@ -28,40 +28,50 @@ class ListView(View):
     def get(self, requst):
         try:
             sub_category_id = requst.GET['category_id']
-            sub_categories = SubCategory.objects.all()
-            sub_category = sub_categories.get(id = sub_category_id)
-            products = Product.objects.filter(sub_category_id = sub_category_id)
+            sub_categories  = SubCategory.objects.all()
+            sub_category    = sub_categories.get(id = sub_category_id)
+            products        = sub_category.product_set.all()
+            
             result = {
-                'sub_cateogry_id' : sub_category.id,
+                'sub_cateogry_id'      : sub_category.id,
                 'sub_category_name'    : sub_category.name,
                 'content'              : sub_category.content,
                 'image_url'            : sub_category.image_url, 
-                'sub_categories'       : [{
-                    'id'    : i.id, 
-                    'name' : i.name,
-                    'product_count': i.product_set.all().count()} for i in Category.objects.get(id = sub_category.category_id).subcategory_set.all()],
-                 'products' : [{'id' : product.id,
-                                'tag' : product.tag,
-                                'is_new' : product.is_new,
-                                'is_vegan' : product.is_vegan,
-                                'is_only_online' : product.is_only_online,
-                                'is_made_in_korea' : product.is_made_in_korea,
-                                'is_sold_out' : bool(not product.item_set.all()[0].stock),
-                                'prince' : int(product.item_set.filter(product_id = product.id)[0].price), 
-                                'image_url' : [i.url for i in product.imgaeurl_set.all()]
-                                    } for product in products],
-                }           
+                'sub_categories'       : [
+                    {
+                        'id'           : category.id, 
+                        'name'         : category.name,
+                        'product_count': category.product_set.count()
+                    } for category in sub_category.category.subcategory_set.all()
+                ],      
+                'products' : [
+                    {
+                        'id'               : product.id,
+                        'tag'              : product.tag,
+                        'is_new'           : product.is_new,
+                        'is_vegan'         : product.is_vegan,
+                        'is_only_online'   : product.is_only_online,
+                        'is_made_in_korea' : product.is_made_in_korea,
+                        'is_sold_out'      : bool(not sum([i.stock for i in product.item_set.all()])),
+                        'price'            : int(product.item_set.order_by('price')[0].price), 
+                        'image_url'        : [image.url for image in product.imgaeurl_set.all()]
+                    } for product in products],
+                }    
+
             for idx, product in enumerate(products):
-                if len(product.item_set.all())==1:
-                    result['products'][idx].setdefault('name',name)
+                if len(product.item_set.all()) == 1:
+                    result['products'][idx].setdefault('name', name)
                 else:
-                    size_names = [i.size.size_g for i in product.item_set.all()]
-                    size_names.sort()
-                    name = product.name
-                    for i in size_names[:]:
-                        name =  name + '/' + str(i) + 'g'
+                    size_values = [size_value.size.size_g for size_value in product.item_set.all()]
+                    name       = product.name
+
+                    size_values.sort()
+
+                    for i in size_values:
+                        name += '/' + str(i) + 'g'
+
                     name = name.replace(f'{product.name}/', f'{product.name} ')
-                    result['products'][idx].setdefault('name',name)
+                    result['products'][idx].setdefault('name', name)
 
             return JsonResponse({'result' : result}, status = 200)
         
@@ -69,5 +79,5 @@ class ListView(View):
             return JsonResponse({'message':'Key Error'}, status = 400)
 
         except SubCategory.DoesNotExist:
-            return JsonResponse({'message' : 'hey~~~'}, status = 400)
+            return JsonResponse({'message' : 'Invalid Category'}, status = 400)
     
