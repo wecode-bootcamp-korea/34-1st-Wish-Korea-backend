@@ -3,7 +3,7 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models import Category, SubCategory
+from products.models import Category, SubCategory, Product
 
 class NavigatorView(View):
     def get(self, request):
@@ -27,3 +27,6 @@ class NavigatorView(View):
             )
 
         return JsonResponse({'result' : result}, status = 200)
+
+    class ListView(View):
+        products = Product.objects.all()
