@@ -26,4 +26,5 @@ class CategoryView(View):
 
 @token_validator
 class ProductView(View):
-    def get()
+    def get(self, requst):
+        
