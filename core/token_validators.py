@@ -5,15 +5,16 @@ from django.http  import JsonResponse
 from users.models        import User
 from wish_korea.settings import SECRET_KEY , ALGORITHM
 
-def token_decorator(func):
+def token_validator(func):
     def wrapper(self,request,*args,**kwargs):
         try:
-            access_token = request.headers["Authorization"]
+            access_token = request.headers.get("Authorization", None)
+            if not access_token:
+                request.user = ''
+                return func(self, request, *args, **kwargs)
             payload = jwt.decode(access_token, SECRET_KEY, ALGORITHM)
             user = User.objects.get(id=payload['user_id'])
             request.user = user
-        except KeyError:
-            return func(self, request, *args, **kwargs)
         except jwt.exceptions.DecodeError:
             return JsonResponse({'message' : ['INVALID_TOKEN'] }, status=400)
         except User.DoesNotExist:

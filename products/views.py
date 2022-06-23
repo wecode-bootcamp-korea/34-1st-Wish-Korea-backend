@@ -1,4 +1,5 @@
 import json
+from unittest import result
 
 from django.http  import JsonResponse
 from django.views import View
@@ -24,7 +25,33 @@ class CategoryView(View):
 
         return JsonResponse({'result' : result}, status = 200)
 
-@token_validator
 class ProductView(View):
-    def get(self, requst):
+    @token_validator
+    def get(self, request):
+        try:
+            product_id = request.GET['product_id']
+            product    = Product.objects.get(id = product_id)
+
+            result = {
+                'product_id' : product_id,
+                'name'       : None,
+                'tag'        : product.tag,
+                'image'      : [url for url in product.image_set.all()],
+                'menual'     : product.menual,
+                'content'    : product.content,
+                'products'   : [
+                    {
+                        'size_g' : '',
+                        'price'  : item.price,
+                        'stock'  : item.stock,
+                        'image'  : item.image_url
+                    }for item in product.item_set.all()
+                ] 
+            }
+            
+            
+            
+            return JsonResponse({'result' : f'{request.user}'}, status = 200)
         
+        except KeyError:
+            return JsonResponse({'message' : 'Invalid Product'}, status = 400)
