@@ -67,10 +67,11 @@ class SignUpView(View):
 class SignInView(View):
     def post(self, request):
         try:
-            data = json.loads(request.body)
+            data     = json.loads(request.body)
             username = data['username']
             password = data['password']
-            user = User.objects.get(username = username)
+
+            user     = User.objects.get(username = username)
 
             if not bcrypt.checkpw(password.encode('utf-8') , user.password.encode('utf-8')):
                 return JsonResponse({"message" : "Invalid User"}, status = 401)
@@ -80,7 +81,7 @@ class SignInView(View):
             return JsonResponse({'token' : token}, status = 200)
         
         except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, status = 401)
+            return JsonResponse({'message' : 'Key Error'}, status = 400)
 
         except User.DoesNotExist:
-            return JsonResponse({'message' : 'Ivalid User'}, status = 400)
+            return JsonResponse({'message' : 'Ivalid User'}, status = 401)
