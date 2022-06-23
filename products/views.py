@@ -33,17 +33,29 @@ class ProductView(View):
             product    = Product.objects.get(id = product_id)
 
             result = {
-                'is_user'    : bool(request.user),
-                'product_id' : product_id,
-                'name'       : None,
-                'tag'        : product.tag,
-                'image'      : [url for url in product.imgaeurl_set.all()],
-                'menual'     : product.manual,
-                'content'    : product.content,
-                'products'   : [
+                'is_user'              : bool(request.user),
+                'product_id'           : product_id,
+                'name'                 : None,
+                'tag'                  : product.tag,
+                'image'                : [url for url in product.imgaeurl_set.all()],
+                'menual'               : product.manual,
+                'content'              : product.content,
+                'important_components' : [
+                    {
+                        'id'   : component.component.id,
+                        'name' : component.component.name
+                    } for component in product.productcomponent_set.filter(important = True).all()
+                ],
+                'components'           : [
+                    {
+                        'id'   : component.id,
+                        'name' : component.name
+                    } for component in product.component.all()
+                ],
+                'products'             : [
                     {
                         'size_g' : item.size.size_g,
-                        'price'  : item.price,
+                        'price'  : int(item.price),
                         'stock'  : item.stock,
                         'image'  : item.image_url
                     }for item in product.item_set.all()
