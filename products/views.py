@@ -33,25 +33,37 @@ class ProductView(View):
             product    = Product.objects.get(id = product_id)
 
             result = {
+                'is_user'    : bool(request.user),
                 'product_id' : product_id,
                 'name'       : None,
                 'tag'        : product.tag,
-                'image'      : [url for url in product.image_set.all()],
-                'menual'     : product.menual,
+                'image'      : [url for url in product.imgaeurl_set.all()],
+                'menual'     : product.manual,
                 'content'    : product.content,
                 'products'   : [
                     {
-                        'size_g' : '',
+                        'size_g' : item.size.size_g,
                         'price'  : item.price,
                         'stock'  : item.stock,
                         'image'  : item.image_url
                     }for item in product.item_set.all()
                 ] 
             }
+
+            if len(product.item_set.all()) == 1:
+                result['products'][idx].setdefault('name', name)
+            else:
+                size_values = [size_value.size.size_g for size_value in product.item_set.all()]
+                name       = product.name
+                size_values.sort()
+                for i in size_values:
+                    name += '/' + str(i) + 'g'
+                name = name.replace(f'{product.name}/', f'{product.name} ')
+                result['products'][idx].setdefault('name', name)
+        
             
             
-            
-            return JsonResponse({'result' : f'{request.user}'}, status = 200)
+            return JsonResponse({'result' : result}, status = 200)
         
         except KeyError:
             return JsonResponse({'message' : 'Invalid Product'}, status = 400)
