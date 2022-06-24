@@ -12,7 +12,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.subcategory__product_set.count(),
+                'products_count' : category.agag,
                 'sub_cateogry'   : [
                     {
                         'id'             : sub_category.id,
@@ -38,17 +38,10 @@ class ListView(View):
                 'name'            : sub_category.name,
                 'content'         : sub_category.content,
                 'image_url'       : sub_category.image_url, 
-                'sub_categories'  : [
-                    {
-                        'id'            : category.id, 
-                        'name'          : category.name,
-                        'product_count' : category.product_set.count()
-                    } for category in sub_category.category.subcategory_set.all()
-                ],      
                 'products' : [
                     {
                         'id'               : product.id,
-                        'name'             : None,
+                        'name'             : product.name,
                         'tag'              : product.tag,
                         'is_new'           : product.is_new,
                         'is_vegan'         : product.is_vegan,
@@ -59,19 +52,6 @@ class ListView(View):
                         'image_url'        : [image.url for image in product.imgaeurl_set.all()]
                     } for product in products],
                 }    
-
-            for idx, product in enumerate(products):
-                if len(product.item_set.all()) == 1:
-                    result['products'][idx]['name'] = name
-                else:
-                    sizes = sorted([size_value.size.size_g for size_value in product.item_set.all()])
-                    name  = product.name
-
-                    for size in sizes:
-                        name += '/' + str(size) + 'g'
-
-                    name = name.replace(f'{product.name}/', f'{product.name} ')
-                    result['products'][idx]['name'] = name
 
             return JsonResponse({'result' : result}, status = 200)
         
