@@ -10,12 +10,14 @@ class CategoryView(View):
         categories     = Category.objects.all()
         result = [
             {
-                'category_id'  : category.id, 
-                'name'         : category.name,
-                'sub_cateogry' : [
+                'category_id'    : category.id, 
+                'name'           : category.name,
+                'products_count' : category.subcategory_set.count(),
+                'sub_cateogry'   : [
                     {
-                        'id'   : sub_category.id,
-                        'name' : sub_category.name
+                        'id'             : sub_category.id,
+                        'name'           : sub_category.name,
+                        'products_count' : sub_category.product_set.all().count() 
                     } for sub_category in category.subcategory_set.all()
                 ] 
             } for category in categories
