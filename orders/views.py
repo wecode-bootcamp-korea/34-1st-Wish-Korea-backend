@@ -1,3 +1,11 @@
-from django.shortcuts import render
+import json
+import jwt
 
-# Create your views here.
+from django.http  import JsonResponse
+from django.views import View
+
+from orders.models import *
+
+class CartView(View):
+    def get(self, requset):
+        
