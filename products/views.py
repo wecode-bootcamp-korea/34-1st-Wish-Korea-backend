@@ -12,7 +12,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.prefetch_related('product'),
+                'products_count' : 1,#category.aa,
                 'sub_cateogry'   : [
                     {
                         'id'             : sub_category.id,
