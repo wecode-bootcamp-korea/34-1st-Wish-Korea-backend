@@ -35,7 +35,6 @@ class ListView(View):
             
             result = {
                 'sub_cateogry_id' : sub_category.id,
-                'name'            : sub_category.name,
                 'content'         : sub_category.content,
                 'image_url'       : sub_category.image_url, 
                 'products' : [
