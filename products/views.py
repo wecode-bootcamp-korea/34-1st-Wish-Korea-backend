@@ -44,6 +44,7 @@ class ProductView(View):
                 ],
                 'products'             : [
                     {
+                        'id'     : item.id,
                         'size_g' : item.size.size_g,
                         'price'  : int(item.price),
                         'stock'  : item.stock,
