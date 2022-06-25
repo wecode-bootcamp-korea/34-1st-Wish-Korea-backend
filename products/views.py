@@ -12,7 +12,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : sum([i.product_set.all().count() for i in category.subcategory_set.all()]), 
+                'products_count' : category.subcategory_set.filter(product__sub_category__in = category.subcategory_set.all()).count(),
                 'sub_cateogry'   : [
                     {
                         'id'             : sub_category.id,
