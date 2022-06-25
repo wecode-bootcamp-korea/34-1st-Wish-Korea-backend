@@ -55,8 +55,5 @@ class ProductView(View):
             
             return JsonResponse({'result' : result}, status = 200)
         
-        except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, status = 400)
-        
         except Product.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Product'}, status = 400)
