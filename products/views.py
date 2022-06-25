@@ -29,8 +29,7 @@ class ListView(View):
     def get(self, requst):
         try:
             sub_category_id = requst.GET['category_id']
-            sub_categories  = SubCategory.objects.all()
-            sub_category    = sub_categories.get(id = sub_category_id)
+            sub_category    = SubCategory.objects.get(id = sub_category_id)
             products        = sub_category.product_set.all()
             
             result = {
@@ -46,7 +45,7 @@ class ListView(View):
                         'is_vegan'         : product.is_vegan,
                         'is_only_online'   : product.is_only_online,
                         'is_made_in_korea' : product.is_made_in_korea,
-                        'is_sold_out'      : bool(not sum([item.stock for item in product.item_set.all()])),
+                        'is_sold_out'      : not product.item_set.exclude(stock__exact = 0).exists(),
                         'price'            : int(product.item_set.order_by('price')[0].price), 
                         'image_url'        : [image.url for image in product.imgaeurl_set.all()]
                     } for product in products],
