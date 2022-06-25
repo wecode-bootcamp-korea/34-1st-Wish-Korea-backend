@@ -15,11 +15,11 @@ class CartView(View):
             item_id  = data['item_id']
             quantity = data['quantity']
 
-             Cart.objects.create(
+            Cart.objects.create(
                 user_id  = user_id,
                 item_id  = item_id,
                 quantity = quantity
             )
 
         except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, stat
+            return JsonResponse({'message' : 'Key Error'}, status = 400)
