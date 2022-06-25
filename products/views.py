@@ -49,7 +49,7 @@ class ProductView(View):
                         'price'  : int(item.price),
                         'stock'  : item.stock,
                         'image'  : item.image_url
-                    }for item in product.item_set.all()
+                    }for item in product.item_set.order_by('size__size_g')
                 ] 
             }
             
