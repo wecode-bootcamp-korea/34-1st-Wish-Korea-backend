@@ -1,5 +1,4 @@
 import json
-from django.db.models import Q
 
 from django.http  import JsonResponse
 from django.views import View
@@ -13,8 +12,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.subcategory_set.product_set.all(),
-                #'products_count' : category.subcategory_set.all().count('product_set'),    #f'{lambda x : x for x in category.subcategory_set.all()}',
+                'products_count' : sum([i.product_set.all().count() for i in category.subcategory_set.all()]), 
                 'sub_cateogry'   : [
                     {
                         'id'             : sub_category.id,
