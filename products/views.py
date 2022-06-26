@@ -4,16 +4,17 @@ from unicodedata import category
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models import Category, SubCategory
+from products.models import Category, SubCategory, Product
 
 class CategoryView(View):
     def get(self, request):
-        categories     = Category.objects.all()
+        categories = Category.objects.all()
         result = [
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.subcategory_set.filter(product__sub_category__in = category.subcategory_set.all()).count(),
+                'products_count' : category.subcategory_set.filter(
+                    product__sub_category__in = category.subcategory_set.all()).count(),
                 'sub_categories' : [
                     {
                         'id'             : sub_category.id,
@@ -30,14 +31,12 @@ class ListView(View):
     def get(self, request):
         try:
             if request.GET.get('category_id'):
-                category = Category.objects.get(id = request.GET['category_id'])
-                sub_categories = category.subcategory_set.all()
-                #products = sub_category.product_set.filter
-
-                result = {
-                    'cateogry_id' : category.id,
-                    #'content'     : category.content,
-                    #'image_url'   : category.image_url, 
+                category_id = request.GET['category_id']
+                products    = Product.objects.filter(sub_category__category_id = category_id)
+                result      = {
+                    'cateogry_id' : category_id,
+                    'content'     : category.content,
+                    'image_url'   : category.image_url, 
                     'products'    : [
                         {
                             'id'               : product.id,
@@ -52,16 +51,17 @@ class ListView(View):
                             'image_url'        : [image.url for image in product.imgaeurl_set.all()]
                         } for product in products],
                     }
+                return JsonResponse({'result' : result}, status = 200) 
             
             sub_category_id = request.GET['sub_category_id']
             sub_category    = SubCategory.objects.get(id = sub_category_id)
             products        = sub_category.product_set.all()
             
             result = {
-                'cateogry_id' : sub_category.id,
-                'content'     : sub_category.content,
-                'image_url'   : sub_category.image_url, 
-                'products'    : [
+                'sub_cateogry_id' : sub_category.id,
+                'content'         : sub_category.content,
+                'image_url'       : sub_category.image_url, 
+                'products'        : [
                     {
                         'id'               : product.id,
                         'name'             : product.name,
