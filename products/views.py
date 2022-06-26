@@ -32,6 +32,7 @@ class ListView(View):
         try:
             if request.GET.get('category_id'):
                 category_id = request.GET['category_id']
+                category    = Category.objects.get(id = category_id)
                 products    = Product.objects.filter(sub_category__category_id = category_id)
                 result      = {
                     'cateogry_id' : category_id,
