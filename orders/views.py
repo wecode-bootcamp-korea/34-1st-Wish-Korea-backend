@@ -12,12 +12,16 @@ class CartView(View):
         try:
             data     = json.loads(requset.body)
             user_id  = requset.user
-            item_id_list  = [i['item_id'] for i in data['items']]
-            quantity_list = [i['quantity'] for i in data['items']]
+            item_id_list  = [item['item_id'] for item in data['items']]
+            quantity_list = [item['quantity'] for item in data['items']]
 
-            cart = Cart.objects.get_or_create(user_id = user_id, item_id = user_id)
+            cart = [ Cart.objects.get_or_create(
+                user_id  = user_id, 
+                item_id  = item_id,
+                quantity = quantity_list[idx]) for idx, item_id in enumerate(item_id_list)
+                ]
 
-            return JsonResponse({'message' : 'Create'}, status = 201)
+            return JsonResponse({'result' : 'aga'}, status = 201)
 
         except KeyError:
             return JsonResponse({'message' : 'Key Error'}, status = 400)
