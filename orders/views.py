@@ -20,15 +20,15 @@ class CartView(View):
                 (
                     user    = user, 
                     item_id = item.get('item_id'),
-                ) for item in data
+                )[0] for item in data
             )
             
             for idx,obj in enumerate(carts):
-                if data[idx].get('quantity') > obj[0].quantity:
+                if data[idx].get('quantity') > obj.quantity:
                     return JsonResponse({'message' : 'Out of stock'}, status = 400)
 
-                obj[0].quantity += data[idx].get('quantity')
-                obj[0].save()
+                obj.quantity += data[idx].get('quantity')
+                obj.save()
 
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
 
