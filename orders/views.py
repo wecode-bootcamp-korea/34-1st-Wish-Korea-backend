@@ -11,16 +11,21 @@ from core.token_decorators import token_decorator
 
 class CartView(View):
     @token_decorator
-    def delete(self, requset):
+    def patch(self, requset, cart_id):
         try:
-            cart_id = requset.GET('cart_id')
-            print(cart_id)
-            Cart.objects.get(id = cart_id)
+            quantity = int(requset.GET.get('quantity'))
+            cart     = Cart.objects.get(id = cart_id)
+            
+            if quantity > cart.item.stock:
+                return JsonResponse({'message' : 'Out of stock'}, status = 400)
+            
+            cart.quantity += quantity
+            cart.save()
 
-            return JsonResponse({'message' : 'No Content'}, status = 201)
+            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
 
         except KeyError:
             return JsonResponse({'message' : 'Key Error'}, status = 400)
         
-        except IntegrityError:
-            return JsonResponse({'message' : 'Invalid Item'}, status = 400)
+        except Cart.DoesNotExist:
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
