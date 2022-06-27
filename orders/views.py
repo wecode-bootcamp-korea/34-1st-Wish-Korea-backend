@@ -18,15 +18,13 @@ class CartView(View):
         result = {
             'cart' : [
                 {
-                    'cart_id'    : cart.id,
-                    'item_id'    : cart.item_id,
-                    'product_size' : 
-                    'name'       : cart.item.product.name,
-                    'price'      : cart.item.price,
-                    'stock'      : cart.item.stock,
-                    'image_url'  : '', #cart.item.product.imageurl_set.get(),
-                    'item_sizes' : [123,515,1000],
-                    #'size'      : [size.size_g for size in cart.item.;size.order_by('size_g')],
+                    'cart_id'   : cart.id,
+                    'items'     : cart.item_id,
+                    'name'      : cart.item.product.name,
+                    'price'     : cart.item.price,
+                    'size'      : cart.item.size.size_g,
+                    'stock'     : cart.item.stock,
+                    'image_url' : cart.item.product.imageurl_set.all()[0],
                     'sub_catgory_name' : cart.item.product.sub_category.name}
             ]for cart in carts
             }
