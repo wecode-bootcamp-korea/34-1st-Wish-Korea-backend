@@ -32,7 +32,7 @@ class ProductView(View):
                 'product_id' : product_id,
                 'name'       : product.name,
                 'tag'        : product.tag,
-                'image'      : [url for url in product.imgaeurl_set.all()],
+                'image'      : [url for url in product.imageurl_set.all()],
                 'manual'     : product.manual,
                 'content'    : product.content,
                 'components' : [
