@@ -27,12 +27,8 @@ class CartView(View):
                 if data[idx].get('quantity') > obj[0].quantity:
                     return JsonResponse({'message' : 'Out of stock'}, status = 400)
 
-                if obj[1]:
-                    obj[0].quantity = data[idx].get('quantity')
-                    obj[0].save()
-                else:
-                    obj[0].quantity += data[idx].get('quantity')
-                    obj[0].save()
+                obj[0].quantity += data[idx].get('quantity')
+                obj[0].save()
 
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
 
