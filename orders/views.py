@@ -5,23 +5,31 @@ import jwt
 from django.http  import JsonResponse
 from django.views import View
 
-from orders.models import Cart
+from orders.models   import Cart
+from products.models import Item
 
 class CartView(View):
     def post(self, requset):
         try:
-            data     = json.loads(requset.body)
-            user_id  = requset.user
-            item_id_list  = [item['item_id'] for item in data['items']]
-            quantity_list = [item['quantity'] for item in data['items']]
-
-            cart = [ Cart.objects.get_or_create(
+            data    = json.loads(requset.body)['items']
+            #user_id = requset.user
+            print(data)
+            user_id = 1
+            carts = [ Cart.objects.get_or_create(
                 user_id  = user_id, 
-                item_id  = item_id,
-                quantity = quantity_list[idx]) for idx, item_id in enumerate(item_id_list)
-                ]
+                item_id  = i.get('item_id'),
+                ) for i in data]
+            
+            for idx,obj in enumerate(carts):
+                print(idx,obj)
+                if obj[1]:
+                    obj[0].quantity = data[idx].get('quantity')
+                    obj[0].save()
+                else:
+                    obj[0].quantity += data[idx].get('quantity')
+                    obj[0].save()
 
-            return JsonResponse({'result' : 'aga'}, status = 201)
+            return JsonResponse({'result' : str(carts)}, status = 201)
 
         except KeyError:
             return JsonResponse({'message' : 'Key Error'}, status = 400)
