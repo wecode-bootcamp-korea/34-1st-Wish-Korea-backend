@@ -11,9 +11,8 @@ from core.token_decorators import token_decorator
 
 class CartView(View):
     @token_decorator
-    def delete(self, requset):
+    def delete(self, requset, cart_id):
         try:
-            cart_id = requset.GET('cart_id')
             Cart.objects.get(id = cart_id)
 
             return JsonResponse({'message' : 'No Content'}, status = 201)
