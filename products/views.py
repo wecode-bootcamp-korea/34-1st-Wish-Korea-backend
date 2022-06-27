@@ -3,7 +3,7 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models       import Product
+from products.models import Product
 
 class CategoryView(View):
     def get(self, request):
@@ -26,7 +26,7 @@ class CategoryView(View):
 class ProductView(View):
     def get(self, request, product_id):
         try:
-            product    = Product.objects.get(id = product_id)
+            product = Product.objects.get(id = product_id)
 
             result = {
                 'product_id' : product_id,
@@ -42,7 +42,7 @@ class ProductView(View):
                         'important' : component.productcomponent_set.get(product_id = product_id).important
                     } for component in product.component.all()
                 ],
-                'products'             : [
+                'items' : [
                     {
                         'id'     : item.id,
                         'size_g' : item.size.size_g,
