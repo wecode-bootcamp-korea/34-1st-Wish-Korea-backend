@@ -36,4 +36,4 @@ class CartView(View):
             return JsonResponse({'message' : 'Key Error'}, status = 400)
         
         except IntegrityError:
-            return JsonResponse({'message' : 'Invalid Item'}, status = 401)
+            return JsonResponse({'message' : 'Invalid Item'}, status = 400)
