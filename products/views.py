@@ -27,17 +27,29 @@ class CategoryView(View):
 
         return JsonResponse({'result' : result}, status = 200)
 
-class ListView(View):
+class ProductListView(View):
     def get(self, request):
         try:
             if request.GET.get('category_id'):
                 category_id = request.GET['category_id']
                 category    = Category.objects.get(id = category_id)
                 products    = Product.objects.filter(sub_category__category_id = category_id)
-                result      = {
-                    'cateogry_id' : category_id,
-                    'content'     : category.content,
-                    'image_url'   : category.image_url, 
+                
+                if category_id:
+                    q =
+                    category = Category.objects.get(id=category_id)
+
+                if sub_category:
+                    q = 
+                    category = SubCategory.objects.get(id=sub_category_id) 
+                
+                category_information = {
+                    'id'        : category.id,
+                    'content'   : category.content,
+                    'image_url' : category.image_url,
+                }
+                
+                result      = { 
                     'products'    : [
                         {
                             'id'               : product.id,
@@ -52,6 +64,8 @@ class ListView(View):
                             'image_url'        : [image.url for image in product.imgaeurl_set.all()]
                         } for product in products],
                     }
+                result['category'] = category_information
+                
                 return JsonResponse({'result' : result}, status = 200) 
             
             sub_category_id = request.GET['sub_category_id']
