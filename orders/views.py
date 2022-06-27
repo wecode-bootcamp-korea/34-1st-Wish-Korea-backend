@@ -15,10 +15,13 @@ class CartView(View):
         try:
             data  = json.loads(requset.body)['items']
             user  = requset.user
-            carts = (Cart.objects.get_or_create(
-                user    = user, 
-                item_id = item.get('item_id'),
-                ) for item in data)
+            carts = (
+                Cart.objects.get_or_create
+                (
+                    user    = user, 
+                    item_id = item.get('item_id'),
+                ) for item in data
+            )
             
             for idx,obj in enumerate(carts):
                 if data[idx].get('quantity') > obj[0].quantity:
