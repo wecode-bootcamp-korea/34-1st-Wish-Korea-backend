@@ -16,7 +16,7 @@ class CartView(View):
             cart_id = requset.GET('cart_id')
             Cart.objects.get(id = cart_id)
 
-            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
+            return JsonResponse({'message' : 'No Content'}, status = 201)
 
         except KeyError:
             return JsonResponse({'message' : 'Key Error'}, status = 400)
