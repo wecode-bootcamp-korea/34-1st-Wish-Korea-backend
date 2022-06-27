@@ -22,3 +22,6 @@ class CartView(View):
         
         except IntegrityError:
             return JsonResponse({'message' : 'Invalid Item'}, status = 400)
+        
+        except Cart.DoesNotExist:
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
