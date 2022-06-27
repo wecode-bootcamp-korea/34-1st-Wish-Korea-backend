@@ -24,7 +24,7 @@ class CartView(View):
                     'price'     : cart.item.price,
                     'stock'     : cart.item.stock,
                     'image_url' : cart.item.product.image_url,
-                    'size'      : [size.size_g for size in cart.item.size_set],
+                    'size'      : [size.size_g for size in cart.item.size_set.order_by('size_g')],
                     'sub_catgory_name' : cart.item.product.sub_category.name}
             ]for cart in carts
             }
