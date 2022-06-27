@@ -7,7 +7,6 @@ from django.views    import View
 from django.db.utils import IntegrityError
 
 from orders.models         import Cart
-from products.models       import Item
 from core.token_decorators import token_decorator
 
 class CartView(View):
