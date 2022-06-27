@@ -1,8 +1,8 @@
 import json
-from unicodedata import category
 
-from django.http  import JsonResponse
-from django.views import View
+from django.http      import JsonResponse
+from django.views     import View
+from django.db.models import Q
 
 from products.models import Category, SubCategory, Product
 
@@ -34,6 +34,7 @@ class ProductListView(View):
                 category_id = request.GET['category_id']
                 products    = Product.objects.filter(sub_category__category_id = category_id)
                 
+                q = Q()
                 if category_id:
                     q =
                     category = Category.objects.get(id=category_id)
