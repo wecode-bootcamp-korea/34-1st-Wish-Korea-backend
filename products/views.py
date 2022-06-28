@@ -40,7 +40,7 @@ class ProductListView(View):
                 category = Category.objects.get(id = category_id)
             
             if sub_category_id:
-                q       &= Q(sub_category_id = category_id)
+                q       &= Q(sub_category_id = sub_category_id)
                 category = SubCategory.objects.get(id = sub_category_id)
             
             products = Product.objects.filter(q)
