@@ -1,11 +1,12 @@
 import json
 
-from django.http      import JsonResponse
-from django.views     import View
-from django.db.models import Count, Q
+from django.http                import JsonResponse
+from django.views               import View
+from django.db.models           import Count, Q, Sum
+from django.db.models.functions import Coalesce
 
 from products.models import Category, SubCategory, Product
-
+from orders.models   import Cart
 
 class CategoryView(View):
     def get(self, request):
@@ -86,7 +87,7 @@ class ProductView(View):
     def get(self, request, product_id):
         try:
             product = Product.objects.get(id = product_id)
-
+            q       = Q()
             result = {
                 'product_id' : product_id,
                 'name'       : product.name,
@@ -102,11 +103,11 @@ class ProductView(View):
                     } for component in product.component.all()
                 ],
                 'items' : [
-                    {
+                    {   
                         'id'     : item.id,
                         'size_g' : item.size.size_g,
                         'price'  : int(item.price),
-                        'stock'  : item.stock,
+                        'stock'  : item.stock - Cart.objects.filter(item_id = item.id).aggregate(stock = Coalesce(Sum('quantity'), 0))['stock'],
                         'image'  : item.image_url
                     }for item in product.item_set.order_by('size__size_g')
                 ] 
