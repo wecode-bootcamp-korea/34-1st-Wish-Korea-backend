@@ -3,11 +3,9 @@ import json
 from django.http  import JsonResponse
 from django.views import View
 
-from products.models       import Category
-from core.token_decorators import token_decorator
+from products.models       import Product, Category
 
 class CategoryView(View):
-    @token_decorator
     def get(self, request):
         categories     = Category.objects.all()
         result = [

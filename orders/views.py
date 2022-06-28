@@ -7,6 +7,7 @@ from orders.models         import Cart
 from core.token_decorators import token_decorator
 
 class CartView(View):
+    @token_decorator
     def delete(self, requset, cart_id):
         try:
             Cart.objects.get(id = cart_id).delete()
