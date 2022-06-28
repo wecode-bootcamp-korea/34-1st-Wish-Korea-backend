@@ -10,7 +10,7 @@ class CartView(View):
     @token_decorator
     def delete(self, requset, cart_id):
         try:
-            Cart.objects.get(id = cart_id).delete()
+            Cart.objects.get(id = cart_id, user = requset.user).delete()
 
             return JsonResponse({'message' : 'No Content'}, status = 200)
         
