@@ -12,10 +12,10 @@ class CartView(View):
         try:
             Cart.objects.get(id = cart_id, user = requset.user).delete()
 
-            return JsonResponse({'message' : 'No Content'}, status = 200)
+            return JsonResponse({'message' : 'No Content'}, status = 204)
         
         except Cart.DoesNotExist:
-            return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
 
 class CartsView(View):
     @token_decorator
