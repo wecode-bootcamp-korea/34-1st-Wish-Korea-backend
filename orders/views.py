@@ -16,12 +16,6 @@ class CartView(View):
             Cart.objects.get(id = cart_id).delete()
 
             return JsonResponse({'message' : 'No Content'}, status = 201)
-
-        except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, status = 400)
-        
-        except IntegrityError:
-            return JsonResponse({'message' : 'Invalid Item'}, status = 400)
         
         except Cart.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
