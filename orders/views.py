@@ -8,9 +8,9 @@ from django.views    import View
 from orders.models         import Cart
 from core.token_decorators import token_decorator
 
-class CartView(View):
+class CartsView(View):
     @token_decorator
-    def patch(self, requset, cart_id):
+    def patch(self, requset):
         try:
             quantity = int(requset.GET.get('quantity'))
             cart     = Cart.objects.get(id = cart_id)
