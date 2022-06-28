@@ -34,7 +34,7 @@ class ProductListView(View):
             sub_category_id = request.GET.get('sub_category_id')
             
             q = Q()
-            
+
             if category_id:
                 q       &= Q(sub_category__category_id = category_id)
                 category = Category.objects.get(id = category_id)
@@ -57,8 +57,7 @@ class ProductListView(View):
                         'is_only_online'   : product.is_only_online,
                         'is_made_in_korea' : product.is_made_in_korea,
                         'is_sold_out'      : not product.item_set.exclude(stock__exact = 0).exists(),
-                        'price'            : list(map(int,[item.price for item in product.item_set.order_by('price')])), 
-                        'price'            : int(product.item_set.order_by('price')[0].price), 
+                        'price'            : [item.price for item in product.item_set.order_by('price')],
                         'image_url'        : [image.url for image in product.imageurl_set.all()]
                 } for product in products],
             }
@@ -72,9 +71,6 @@ class ProductListView(View):
             result['category'] = category_information
                 
             return JsonResponse({'result' : result}, status = 200) 
-        
-        except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, status = 400)
 
         except SubCategory.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Category'}, status = 400)
