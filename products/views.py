@@ -14,7 +14,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.products.counts,
+                'products_count' : category.product_counts,
                 'sub_categories' : [
                     {
                         'id'             : sub_category.id,
