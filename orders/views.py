@@ -7,17 +7,18 @@ from django.db.models import Sum
 from orders.models         import Cart
 from core.token_decorators import token_decorator
 
-class CartsView(View):
+class CartView(View):
     @token_decorator
     def patch(self, requset):
         try:
-            data                = json.loads(requset.body)
-            cart                = Cart.objects.get(id = data['cart_id'])
-            total_cart_quantity = Cart.objects.filter(item_id=6).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
-            if cart.item.stock - total_cart_quantity < data["quantity"]:
+            cart                = json.loads(requset.body)
+            cart_id             = cart.get('id')
+            cart_obj            = Cart.objects.get(id = cart_id)
+            total_cart_quantity = Cart.objects.filter(item_=cart_obj.item).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
+            if cart.item.stock - total_cart_quantity < cart["quantity"]:
                     return JsonResponse({'message' : 'Out of stock'}, status = 400)
             
-            cart.quantity += quantity
+            cart.quantity += cart.get('quantity')
             cart.save()
 
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
