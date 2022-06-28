@@ -24,7 +24,7 @@ class CartView(View):
             )
             
             for idx,obj in enumerate(carts):
-                if data[idx].get('quantity') > obj.quantity:
+                if data[idx].get('quantity') > obj.item.stock:
                     return JsonResponse({'message' : 'Out of stock'}, status = 400)
 
                 obj.quantity += data[idx].get('quantity')
