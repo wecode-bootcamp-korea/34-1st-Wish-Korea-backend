@@ -8,7 +8,7 @@ from django.views    import View
 from orders.models         import Cart
 from core.token_decorators import token_decorator
 
-class CartView(View):
+class CartsView(View):
     @token_decorator
     def delete(self, requset, cart_id):
         try:
