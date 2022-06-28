@@ -26,8 +26,8 @@ class SignUpView(View):
             phone_number = data['phone_number']
             last_name    = data['last_name']
             first_name   = data['first_name']
-            nick_name    = data.get('adress','')
-            adress       = data.get('adress','')
+            nick_name    = data.get('nick_name','')
+            address      = data.get('address','')
 
             validate_names(username, nick_name, last_name, first_name)
             validate_email(email)
@@ -53,7 +53,7 @@ class SignUpView(View):
                 last_name    = last_name,
                 first_name   = first_name,
                 nick_name    = nick_name,
-                adress       = adress
+                address      = address
             )
 
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
