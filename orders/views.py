@@ -9,7 +9,7 @@ from django.db.utils import IntegrityError
 from orders.models         import Cart
 from core.token_decorators import token_decorator
 
-class CartView(View):
+class CartsView(View):
     @token_decorator
     def post(self, requset):
         try:
