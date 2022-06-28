@@ -21,9 +21,6 @@ class CartView(View):
             cart.save()
 
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
-
-        except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, status = 400)
         
         except Cart.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
