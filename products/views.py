@@ -6,6 +6,7 @@ from django.views import View
 from products.models import Product
 
 class CategoryView(View):
+    @token_decorator
     def get(self, request):
         categories     = Category.objects.all()
         result = [
