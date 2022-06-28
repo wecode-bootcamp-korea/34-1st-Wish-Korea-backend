@@ -1,3 +1,32 @@
-from django.shortcuts import render
+import json
+from unicodedata import name
 
-# Create your views here.
+import jwt
+
+from django.http  import JsonResponse
+from django.views import View
+
+from orders.models         import Cart
+from core.token_dacorators import token_decorator
+
+class CartsView(View):
+    @token_decorator
+    def get(self, request):
+        user   = request.user
+        carts  = Cart.objects.filter(user = user)
+        result = {
+            'carts' : [
+                {
+                    'cart_id'   : cart.id,
+                    'items'     : cart.item_id,
+                    'name'      : cart.item.product.name,
+                    'price'     : int(cart.item.price),
+                    'size'      : cart.item.size.size_g,
+                    'stock'     : cart.item.stock,
+                    'quantity'  : cart.quantity,
+                    'image_url' : [image.url for image in cart.item.product.imageurl_set.all()],
+                    'sub_catgory_name' : cart.item.product.sub_category.name
+            }for cart in carts]
+        }
+            
+        return JsonResponse({'result' : result}, status = 200)
