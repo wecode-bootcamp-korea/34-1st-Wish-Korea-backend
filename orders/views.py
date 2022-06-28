@@ -12,7 +12,7 @@ class CartsView(View):
         try:
             Cart.objects.get(id = cart_id).delete()
 
-            return JsonResponse({'message' : 'No Content'}, status = 201)
+            return JsonResponse({'message' : 'No Content'}, status = 200)
         
         except Cart.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
