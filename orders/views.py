@@ -12,10 +12,9 @@ class CartView(View):
     def patch(self, requset):
         try:
             cart                = json.loads(requset.body)
-            cart_id             = cart.get('id')
-            cart_obj            = Cart.objects.get(id = cart_id)
+            cart_obj            = Cart.objects.get(id = cart.get('cart_id'))
             total_cart_quantity = Cart.objects.filter(item_=cart_obj.item).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
-            if cart.item.stock - total_cart_quantity < cart["quantity"]:
+            if cart.item.stock - total_cart_quantity < cart.get("quantity"):
                     return JsonResponse({'message' : 'Out of stock'}, status = 400)
             
             cart.quantity += cart.get('quantity')
