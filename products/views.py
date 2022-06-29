@@ -2,7 +2,7 @@ import json
 
 from django.http                import JsonResponse
 from django.views               import View
-from django.db.models           import Count, Q, Sum
+from django.db.models           import Count, Q, Sum, Case, When, F
 from django.db.models.functions import Coalesce
 
 from products.models import Category, SubCategory, Product
@@ -16,10 +16,13 @@ class CategoryView(View):
                 'category_id'    : category.id, 
                 'name'           : category.name,
                 'products_count' : category.product_counts,
+                'content'        : category.content,
+                'image_url'      : category.image_url,
                 'sub_categories' : [
                     {
                         'id'             : sub_category.id,
                         'name'           : sub_category.name,
+                        'content'        : sub_category.image_url,
                         'products_count' : sub_category.product_set.all().count() 
                     } for sub_category in category.subcategory_set.all()
                 ] 
@@ -38,16 +41,20 @@ class ProductListView(View):
 
             if category_id:
                 q       &= Q(sub_category__category_id = category_id)
-                category = Category.objects.get(id = category_id)
+                # category = Category.objects.get(id = category_id)
             
             if sub_category_id:
                 q       &= Q(sub_category_id = sub_category_id)
-                category = SubCategory.objects.get(id = sub_category_id)
+                # category = SubCategory.objects.get(id = sub_category_id)
             
-            products = Product.objects.filter(q).annotate(quantity_sum = Sum('product__item__cart_quantity'), stock_sum = Sum('product__item_stock'))
-            print(dir(products[0]))
+            products = Product.objects.filter(q).annotate(
+                quantity_sum = Coalesce(Sum('item__cart__quantity'),0), 
+                stock_sum = Coalesce(Sum('item__stock'),0),
+                is_sold_out = Case(When(F('stock_sum') - F('quantity_sum') <= 0, then=True), default=False)
+            )
+
             result = { 
-                'category' : None,
+                # 'category' : None,
                 'products' : [
                     {   
                         'id'               : product.id,
@@ -57,22 +64,19 @@ class ProductListView(View):
                         'is_vegan'         : product.is_vegan,
                         'is_only_online'   : product.is_only_online,
                         'is_made_in_korea' : product.is_made_in_korea,
-                        'products' : product.quantity_sum,
-                        'afag'     : product.stock_sum,
-                        #'is_sold_out'      : not product.item_set.Sum(stock__exact = 0).exists(),
-                        # 'is_sold_out'      : not product.item_set.exclude(stock__exact = 0).exists(),
+                        'is_sold_out'      : product.is_sold_out,
                         'price'            : [int(item.price) for item in product.item_set.order_by('price')],
                         'image_url'        : [image.url for image in product.imageurl_set.all()]
                 } for product in products],
             }
 
-            category_information = {
-                'id'        : category.id,
-                'content'   : category.content,
-                'image_url' : category.image_url,
-            }
+            # category_information = {
+                # 'id'        : category.id,
+                # 'content'   : category.content,
+                # 'image_url' : category.image_url,
+            # }
 
-            result['category'] = category_information
+            #result['category'] = category_information
                 
             return JsonResponse({'result' : result}, status = 200) 
 
