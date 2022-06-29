@@ -1,10 +1,12 @@
 import json
 
-from django.http      import JsonResponse
-from django.views     import View
-from django.db.models import Count, Q
+from django.http                import JsonResponse
+from django.views               import View
+from django.db.models           import Count, Q, Sum
+from django.db.models.functions import Coalesce
 
 from products.models import Category, SubCategory, Product
+from orders.models   import Cart
 
 class CategoryView(View):
     def get(self, request):
@@ -13,7 +15,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.products.counts,
+                'products_count' : category.product_counts,
                 'sub_categories' : [
                     {
                         'id'             : sub_category.id,
@@ -42,8 +44,8 @@ class ProductListView(View):
                 q       &= Q(sub_category_id = sub_category_id)
                 category = SubCategory.objects.get(id = sub_category_id)
             
-            products = Product.objects.filter(q)
-
+            products = Product.objects.filter(q).annotate(quantity_sum = Sum('product__item__cart_quantity'), stock_sum = Sum('product__item_stock'))
+            print(dir(products[0]))
             result = { 
                 'category' : None,
                 'products' : [
@@ -55,7 +57,10 @@ class ProductListView(View):
                         'is_vegan'         : product.is_vegan,
                         'is_only_online'   : product.is_only_online,
                         'is_made_in_korea' : product.is_made_in_korea,
-                        'is_sold_out'      : not product.item_set.exclude(stock__exact = 0).exists(),
+                        'products' : product.quantity_sum,
+                        'afag'     : product.stock_sum,
+                        #'is_sold_out'      : not product.item_set.Sum(stock__exact = 0).exists(),
+                        # 'is_sold_out'      : not product.item_set.exclude(stock__exact = 0).exists(),
                         'price'            : [int(item.price) for item in product.item_set.order_by('price')],
                         'image_url'        : [image.url for image in product.imageurl_set.all()]
                 } for product in products],
@@ -81,12 +86,11 @@ class ProductView(View):
     def get(self, request, product_id):
         try:
             product = Product.objects.get(id = product_id)
-
             result = {
                 'product_id' : product_id,
                 'name'       : product.name,
                 'tag'        : product.tag,
-                'image'      : [url for url in product.imageurl_set.all()],
+                'image'      : [image.url for image in product.imageurl_set.all()],
                 'manual'     : product.manual,
                 'content'    : product.content,
                 'components' : [
@@ -97,11 +101,11 @@ class ProductView(View):
                     } for component in product.component.all()
                 ],
                 'items' : [
-                    {
+                    {   
                         'id'     : item.id,
                         'size_g' : item.size.size_g,
                         'price'  : int(item.price),
-                        'stock'  : item.stock,
+                        'stock'  : item.stock - Cart.objects.filter(item_id = item.id).aggregate(stock = Coalesce(Sum('quantity'), 0))['stock'],
                         'image'  : item.image_url
                     }for item in product.item_set.order_by('size__size_g')
                 ] 
