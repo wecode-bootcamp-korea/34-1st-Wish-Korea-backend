@@ -92,8 +92,6 @@ class ProductView(View):
                 'name'       : product.name,
                 'tag'        : product.tag,
                 'image'      : [image.url for image in product.imageurl_set.all()],
-                'manual'     : product.manual,
-                'content'    : product.content,
                 'components' : [
                     {
                         'id'        : component.id,
