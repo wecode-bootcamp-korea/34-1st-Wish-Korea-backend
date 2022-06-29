@@ -9,9 +9,9 @@ from core.token_decorators import token_decorator
 
 class CartView(View):
     @token_decorator
-    def delete(self, requset, cart_id):
+    def delete(self, request, cart_id):
         try:
-            Cart.objects.get(id = cart_id, user = requset.user).delete()
+            Cart.objects.get(id = cart_id, user = request.user).delete()
 
             return JsonResponse({'message' : 'No Content'}, status = 204)
         
