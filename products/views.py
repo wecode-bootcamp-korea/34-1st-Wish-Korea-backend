@@ -49,9 +49,10 @@ class ProductListView(View):
             products = Product.objects.filter(q).annotate(
                 quantity_sum = Coalesce(Sum('item__cart__quantity'),0), 
                 stock_sum = Coalesce(Sum('item__stock'),0),
-                total = F('stock_sum') - F('quantity_sum')
-            ).annotate(is_sold_out = Case(When(F('total__exact=0'),then = True), default = False))
-            
+                total = F('stock_sum') - F('quantity_sum'),
+                is_sold_out = Case(When(total__exact=0, then = True), default = False)
+                )
+                
             result = {
                 'products' : [
                     {   
