@@ -2,7 +2,7 @@ import json
 
 from django.http                import JsonResponse
 from django.views               import View
-from django.db.models           import Sum, F
+from django.db.models           import Sum, F, Q
 from django.db.models.functions import Coalesce
 
 from orders.models         import Cart
@@ -10,14 +10,12 @@ from core.token_decorators import token_decorator
 
 class CartView(View):
     @token_decorator
-    def delete(self, requset, cart_id):
-        try:
-            Cart.objects.get(id = cart_id, user = requset.user).delete()
-
-            return JsonResponse({'message' : 'No Content'}, status = 204)
+    def delete(self, request):
+        cart_ids = request.GET.getlist('cart_id')
         
-        except Cart.DoesNotExist:
-            return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
+        Cart.objects.filter(Q(user = request.user) & Q(id__in = cart_ids)).delete()
+
+        return JsonResponse({'message' : 'No Content'}, status = 204)
 
 class CartsView(View):
     @token_decorator
