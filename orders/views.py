@@ -13,7 +13,6 @@ class CartsView(View):
     def post(self, request):
         try:
             items = json.loads(request.body)['items']
-
             for item in items:
                 cart, created       = Cart.objects.get_or_create(user_id  = request.user.id, item_id  = item["id"])
                 total_cart_quantity = Cart.objects.filter(item_id=item['id']).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
@@ -33,8 +32,7 @@ class CartsView(View):
     @token_decorator
     def get(self, request):
         user   = request.user
-        carts  = Cart.objects.filter(user = user).annotate(Sum('item__cart__quantity'))
-        print(dir(carts[0].item__cart__quantity__sum))
+        carts  = Cart.objects.filter(user = user).annotate(qauntity_sum = Sum('item__cart__quantity'))
         result = {
             'carts' : [
                 {
@@ -43,7 +41,7 @@ class CartsView(View):
                     'name'      : cart.item.product.name,
                     'price'     : int(cart.item.price),
                     'size'      : cart.item.size.size_g,
-                    'stock'     : cart.item.stock - cart.item__cart__quantity__sum,
+                    'stock'     : cart.item.stock - cart.qauntity_sum,
                     'quantity'  : cart.quantity,
                     'image_url' : [image.url for image in cart.item.product.imageurl_set.all()],
                     'sub_catgory_name' : cart.item.product.sub_category.name
