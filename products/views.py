@@ -56,7 +56,7 @@ class ProductListView(View):
                         'is_only_online'   : product.is_only_online,
                         'is_made_in_korea' : product.is_made_in_korea,
                         'is_sold_out'      : not product.item_set.exclude(stock__exact = 0).exists(),
-                        'price'            : [item.price for item in product.item_set.order_by('price')],
+                        'price'            : [int(item.price) for item in product.item_set.order_by('price')],
                         'image_url'        : [image.url for image in product.imageurl_set.all()]
                 } for product in products],
             }
