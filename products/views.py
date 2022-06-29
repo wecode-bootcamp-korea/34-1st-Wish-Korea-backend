@@ -10,7 +10,7 @@ from orders.models   import Cart
 
 class CategoryView(View):
     def get(self, request):
-        categories = Category.objects.all().annotate(product_counts=Count("subcategory__product__id"))
+        categories = Category.objects.all().annotate(product_counts=Count("subcategory__product__id")).prefetch_related('subcategory_set')
         result = [
             {
                 'category_id'    : category.id, 
@@ -22,7 +22,8 @@ class CategoryView(View):
                     {
                         'id'             : sub_category.id,
                         'name'           : sub_category.name,
-                        'content'        : sub_category.image_url,
+                        'content'        : sub_category.content,
+                        'image_url'      : sub_category.image_url,
                         'products_count' : sub_category.product_set.all().count() 
                     } for sub_category in category.subcategory_set.all()
                 ] 
@@ -41,20 +42,17 @@ class ProductListView(View):
 
             if category_id:
                 q &= Q(sub_category__category_id = category_id)
-                # category = Category.objects.get(id = category_id)
             
             if sub_category_id:
                 q &= Q(sub_category_id = sub_category_id)
-                # category = SubCategory.objects.get(id = sub_category_id)
             
             products = Product.objects.filter(q).annotate(
                 quantity_sum = Coalesce(Sum('item__cart__quantity'),0), 
                 stock_sum = Coalesce(Sum('item__stock'),0),
-                is_sold_out = Case(When(F('stock_sum') - F('quantity_sum') <= 0, then=True), default=False)
-            )
-
-            result = { 
-                # 'category' : None,
+                total = F('stock_sum') - F('quantity_sum')
+            ).annotate(is_sold_out = Case(When(F('total__exact=0'),then = True), default = False))
+            
+            result = {
                 'products' : [
                     {   
                         'id'               : product.id,
@@ -69,14 +67,6 @@ class ProductListView(View):
                         'image_url'        : [image.url for image in product.imageurl_set.all()]
                 } for product in products],
             }
-
-            # category_information = {
-                # 'id'        : category.id,
-                # 'content'   : category.content,
-                # 'image_url' : category.image_url,
-            # }
-
-            #result['category'] = category_information
                 
             return JsonResponse({'result' : result}, status = 200) 
 
