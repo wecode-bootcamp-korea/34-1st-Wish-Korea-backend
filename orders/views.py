@@ -1,4 +1,5 @@
 import json
+from telnetlib import STATUS
 
 from django.http      import JsonResponse
 from django.views     import View
@@ -14,8 +15,12 @@ class CartView(View):
             cart                = json.loads(requset.body)
             cart_obj            = Cart.objects.get(id = cart.get('cart_id'))
             total_cart_quantity = Cart.objects.filter(item_=cart_obj.item).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
+            
             if cart.item.stock - total_cart_quantity < cart.get("quantity"):
-                    return JsonResponse({'message' : 'Out of stock'}, status = 400)
+                return JsonResponse({'message' : 'Out of stock'}, status = 400)
+            
+            if cart_obj.quantity + cart.get('quantity') < 0:
+                return JsonResponse({'message' : "Quantity Already Zero"}, status = 400)
             
             cart.quantity += cart.get('quantity')
             cart.save()
@@ -23,7 +28,7 @@ class CartView(View):
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
         
         except Cart.DoesNotExist:
-            return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
             
 class CartsView(View):
     @token_decorator
