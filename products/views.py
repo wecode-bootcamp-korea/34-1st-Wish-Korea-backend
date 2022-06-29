@@ -6,7 +6,6 @@ from django.db.models import Count, Q
 
 from products.models import Category, SubCategory, Product
 
-
 class CategoryView(View):
     def get(self, request):
         categories = Category.objects.all().annotate(product_counts=Count("subcategory__product__id"))
@@ -14,7 +13,7 @@ class CategoryView(View):
             {
                 'category_id'    : category.id, 
                 'name'           : category.name,
-                'products_count' : category.products.counts,
+                'products_count' : category.product_counts,
                 'sub_categories' : [
                     {
                         'id'             : sub_category.id,

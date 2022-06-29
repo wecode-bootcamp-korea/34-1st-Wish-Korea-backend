@@ -8,25 +8,16 @@ from django.db.models.functions import Coalesce
 from orders.models         import Cart
 from core.token_decorators import token_decorator
 
-class CartsView(View):
+class CartView(View):
     @token_decorator
-    def post(self, request):
+    def delete(self, requset, cart_id):
         try:
-            items = json.loads(request.body)['items']
-            for item in items:
-                cart, created       = Cart.objects.get_or_create(user_id  = request.user.id, item_id  = item["id"])
-                total_cart_quantity = Cart.objects.filter(item_id=item['id']).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
+            Cart.objects.get(id = cart_id, user = requset.user).delete()
 
-                if cart.item.stock - total_cart_quantity < item["quantity"]:
-                    return JsonResponse({'message' : 'Out of stock'}, status = 400)
-
-                cart.quantity += item["quantity"]
-                cart.save()
-
-            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
-           
-        except KeyError:
-            return JsonResponse({'message' : 'Key Error'}, status = 400)
+            return JsonResponse({'message' : 'No Content'}, status = 204)
+        
+        except Cart.DoesNotExist:
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
 
 class CartsView(View):
     @token_decorator
@@ -49,3 +40,22 @@ class CartsView(View):
         }
             
         return JsonResponse({'result' : result}, status = 200)
+
+    @token_decorator
+    def post(self, request):
+        try:
+            items = json.loads(request.body)['items']
+            for item in items:
+                cart, created       = Cart.objects.get_or_create(user_id  = request.user.id, item_id  = item["id"])
+                total_cart_quantity = Cart.objects.filter(item_id=item['id']).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
+
+                if cart.item.stock - total_cart_quantity < item["quantity"]:
+                    return JsonResponse({'message' : 'Out of stock'}, status = 400)
+
+                cart.quantity += item["quantity"]
+                cart.save()
+
+            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
+           
+        except KeyError:
+            return JsonResponse({'message' : 'Key Error'}, status = 400)
