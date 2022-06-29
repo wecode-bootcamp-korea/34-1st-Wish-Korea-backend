@@ -37,13 +37,13 @@ class SignUpView(View):
             hashed_password = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt()).decode('utf-8')
 
             if User.objects.filter(username = username).exists():
-                return JsonResponse({'message' : 'Duplicated username'})        
+                return JsonResponse({'message' : 'Duplicated username'}, status = 400)        
 
             if User.objects.filter(email = email).exists():
-                return JsonResponse({'message' : 'Duplicated email'})
+                return JsonResponse({'message' : 'Duplicated email'}, status = 400)
 
             if User.objects.filter(phone_number = phone_number).exists():
-                return JsonResponse({'message' : 'Duplicated phone number'})
+                return JsonResponse({'message' : 'Duplicated phone number'}, status = 400)
 
             User.objects.create(
                 username     = username,
