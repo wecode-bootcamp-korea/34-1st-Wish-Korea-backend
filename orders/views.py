@@ -12,10 +12,17 @@ class CartView(View):
     @token_decorator
     def delete(self, request):
         cart_ids = request.GET.getlist('cart_id')
-        
-        Cart.objects.filter(Q(user = request.user) & Q(id__in = cart_ids)).delete()
+        Cart.objects.filter(id__in = cart_ids).delete()
 
         return JsonResponse({'message' : 'No Content'}, status = 204)
+        # q = Q()
+        # 
+        # for cart_id in cart_ids:
+            # q &= Q(id = cart_id)
+        # 
+        # print(q)
+        # Cart.objects.filter(Q(user=request.user)&q)
+        # return JsonResponse({'message' : 'No Content'}, status = 204)
 
 class CartsView(View):
     @token_decorator
