@@ -87,7 +87,6 @@ class ProductView(View):
     def get(self, request, product_id):
         try:
             product = Product.objects.get(id = product_id)
-            q       = Q()
             result = {
                 'product_id' : product_id,
                 'name'       : product.name,
