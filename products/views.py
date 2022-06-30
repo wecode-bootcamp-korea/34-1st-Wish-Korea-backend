@@ -37,6 +37,9 @@ class ProductListView(View):
         try:
             category_id     = request.GET.get('category_id')
             sub_category_id = request.GET.get('sub_category_id')
+            sort_key        = request.GET.get('sort_key')
+            offset          = int(request.GET.get('offset', 0))
+            limit           = int(request.GET.get('limite', 30))
             
             q = Q()
 
@@ -45,13 +48,18 @@ class ProductListView(View):
             
             if sub_category_id:
                 q &= Q(sub_category_id = sub_category_id)
+
+            sort_set = {
+                'random' : '?',
+                'hot'    : 'total'
+            }
             
             products = Product.objects.filter(q).annotate(
                 quantity_sum = Coalesce(Sum('item__cart__quantity'),0), 
-                stock_sum = Coalesce(Sum('item__stock'),0),
-                total = F('stock_sum') - F('quantity_sum'),
-                is_sold_out = Case(When(total__exact=0, then = True), default = False)
-                )
+                stock_sum    = Coalesce(Sum('item__stock'),0),
+                total        = F('stock_sum') - F('quantity_sum'),
+                is_sold_out  = Case(When(total__exact=0, then = True), default = False)
+                ).order_by(sort_set.get(sort_key, 'hot'))[offset:offset + limit]
                 
             result = {
                 'products' : [
