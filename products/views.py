@@ -59,7 +59,7 @@ class ProductListView(View):
                 stock_sum    = Coalesce(Sum('item__stock'),0),
                 total        = F('stock_sum') - F('quantity_sum'),
                 is_sold_out  = Case(When(total__exact=0, then = True), default = False)
-                ).order_by(sort_set.get(sort_key, 'hot'))[offset:offset + limit]
+                ).order_by(sort_set.get(sort_key, 'total'))[offset:offset + limit]
                 
             result = {
                 'products' : [
