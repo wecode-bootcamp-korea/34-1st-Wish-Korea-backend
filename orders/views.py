@@ -20,9 +20,6 @@ class CartView(View):
             if cart.item.stock - total_cart_quantity < data.get("quantity"):
                 return JsonResponse({'message' : 'Out of stock'}, status = 400)
             
-            if cart.quantity + data.get('quantity') <= 0:
-                return JsonResponse({'message' : "Quantity Already Zero"}, status = 400)
-            
             cart.quantity += data.get('quantity')
             cart.save()
 
@@ -30,10 +27,11 @@ class CartView(View):
         
         except Cart.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
-            
-    def delete(self, requset, cart_id):
+
+    @token_decorator        
+    def delete(self, request, cart_id):
         try:
-            Cart.objects.get(id = cart_id, user = requset.user).delete()
+            Cart.objects.get(id = cart_id, user = request.user).delete()
 
             return JsonResponse({'message' : 'No Content'}, status = 204)
         
