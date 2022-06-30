@@ -59,3 +59,9 @@ class CartsView(View):
            
         except KeyError:
             return JsonResponse({'message' : 'Key Error'}, status = 400)
+
+    @token_decorator
+    def delete(self, request):
+        Cart.objects.filter(user = request.user).delete()
+
+        return JsonResponse({'message' : 'No Content'}, status = 204)
