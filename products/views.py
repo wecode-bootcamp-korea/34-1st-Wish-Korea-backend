@@ -50,8 +50,7 @@ class ProductListView(View):
                 q &= Q(sub_category_id = sub_category_id)
 
             sort_set = {
-                'random' : '?',
-                'hot'    : 'total'
+                'random' : '?'
             }
             
             products = Product.objects.filter(q).annotate(
