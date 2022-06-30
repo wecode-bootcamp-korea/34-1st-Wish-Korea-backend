@@ -39,7 +39,7 @@ class ProductListView(View):
             sub_category_id = request.GET.get('sub_category_id')
             sort_key        = request.GET.get('sort_key')
             offset          = int(request.GET.get('offset', 0))
-            limit           = int(request.GET.get('limite', 30))
+            limit           = int(request.GET.get('limit', 30))
             
             q = Q()
 
