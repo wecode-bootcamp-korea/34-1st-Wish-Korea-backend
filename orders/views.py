@@ -1,4 +1,5 @@
 import json
+from telnetlib import STATUS
 
 from django.http                import JsonResponse
 from django.views               import View
@@ -10,9 +11,27 @@ from core.token_decorators import token_decorator
 
 class CartView(View):
     @token_decorator
-    def delete(self, requset, cart_id):
+    def patch(self, requset):
         try:
-            Cart.objects.get(id = cart_id, user = requset.user).delete()
+            data                = json.loads(requset.body)
+            cart                = Cart.objects.get(id = data.get('cart_id'))
+            total_cart_quantity = Cart.objects.filter(item=cart.item).aggregate(total_quantity=Sum('quantity'))["total_quantity"]
+            
+            if cart.item.stock - total_cart_quantity < data.get("quantity"):
+                return JsonResponse({'message' : 'Out of stock'}, status = 400)
+            
+            cart.quantity += data.get('quantity')
+            cart.save()
+
+            return JsonResponse({'message' : 'SUCCESS'}, status = 201)
+        
+        except Cart.DoesNotExist:
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
+
+    @token_decorator        
+    def delete(self, request, cart_id):
+        try:
+            Cart.objects.get(id = cart_id, user = request.user).delete()
 
             return JsonResponse({'message' : 'No Content'}, status = 204)
         
@@ -59,3 +78,9 @@ class CartsView(View):
            
         except KeyError:
             return JsonResponse({'message' : 'Key Error'}, status = 400)
+
+    @token_decorator
+    def delete(self, request):
+        Cart.objects.filter(user = request.user).delete()
+
+        return JsonResponse({'message' : 'No Content'}, status = 204)
