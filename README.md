@@ -13,6 +13,8 @@
 ![Main_page](https://i.postimg.cc/Bv7zgF4m/2022-07-03-11-52-09.png)
 # Database
 ![Database_ERD](https://i.postimg.cc/zX3V2ZCp/2022-07-03-1-33-53.png)   
+# End Point
+![End Point](https://i.postimg.cc/d1WKrs9G/2022-07-03-11-18-45.png)
 #  Feature   
 * 회원가입
 * 로그인
