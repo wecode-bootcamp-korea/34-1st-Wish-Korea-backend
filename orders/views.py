@@ -3,8 +3,7 @@ from telnetlib import STATUS
 
 from django.http                import JsonResponse
 from django.views               import View
-from django.db.models           import Sum, F
-from django.db.models.functions import Coalesce
+from django.db.models           import Sum, Q
 
 from orders.models         import Cart
 from core.token_decorators import token_decorator
@@ -24,16 +23,6 @@ class CartView(View):
             cart.save()
 
             return JsonResponse({'message' : 'SUCCESS'}, status = 201)
-        
-        except Cart.DoesNotExist:
-            return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
-
-    @token_decorator        
-    def delete(self, request, cart_id):
-        try:
-            Cart.objects.get(id = cart_id, user = request.user).delete()
-
-            return JsonResponse({'message' : 'No Content'}, status = 204)
         
         except Cart.DoesNotExist:
             return JsonResponse({'message' : 'Invalid Cart'}, status = 404)
@@ -81,6 +70,10 @@ class CartsView(View):
 
     @token_decorator
     def delete(self, request):
-        Cart.objects.filter(user = request.user).delete()
+        q  = Q()
+        q &= Q(id__in = request.GET.getlist('cart_id'))
+        q &= Q(user = request.user)
+
+        Cart.objects.filter(q).delete()
 
         return JsonResponse({'message' : 'No Content'}, status = 204)
