@@ -1,9 +1,8 @@
 import json
-from telnetlib import STATUS
 
 from django.http                import JsonResponse
 from django.views               import View
-from django.db.models           import Sum, Q
+from django.db.models           import Sum
 
 from orders.models         import Cart
 from core.token_decorators import token_decorator
