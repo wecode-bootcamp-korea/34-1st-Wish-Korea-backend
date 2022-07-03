@@ -3,9 +3,9 @@
 ***
 # Introduction
 입욕제,세정제,화장품을 온라인으로 판매하는 e커머스 서비스
-개발 기간 : 2022년 6월 20일 ~ 2022년 7월 1일(2주간)  
-Work Process : Scrum Proccess   
-Team Collaboration Tool : Slack, Trello, Github 
+* 개발 기간 : 2022년 6월 20일 ~ 2022년 7월 1일(2주간)  
+* Work Process : Scrum Proccess   
+* Team Collaboration Tool : Slack, Trello, Github 
 ## Developres :
 * Front-end : [하상원](https://github.com/hasangwon), [우혜림](https://github.com/wooohyerim), [안중영](https://github.com/Ahnjungyoung), [정예지](https://github.com/dingwan0331)
 * Back-end : [정진관](https://github.com/dingwan0331)   
