@@ -34,7 +34,7 @@ class CartsView(View):
                     'size'      : cart.item.size.size_g,
                     'stock'     : cart.item.stock - cart.qauntity_sum,
                     'quantity'  : cart.quantity,
-                    'image_url' : [image.url for image in cart.item.product.imageurl_set.all()],
+                    'image_url' : cart.item.image_url,
                     'sub_catgory_name' : cart.item.product.sub_category.name
             }for cart in carts]
         }
