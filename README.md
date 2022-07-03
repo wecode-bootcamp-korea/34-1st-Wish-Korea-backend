@@ -14,7 +14,7 @@
 # Database
 ![Database_ERD](https://i.postimg.cc/zX3V2ZCp/2022-07-03-1-33-53.png)   
 # End Point
-![End Point](https://i.postimg.cc/d1WKrs9G/2022-07-03-11-18-45.png)
+![End Point](https://i.postimg.cc/L6PbMtbr/2022-07-03-11-42-19.png)
 #  Feature   
 * 회원가입
 * 로그인
