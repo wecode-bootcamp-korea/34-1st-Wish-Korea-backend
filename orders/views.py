@@ -70,10 +70,13 @@ class CartsView(View):
 
     @token_decorator
     def delete(self, request):
-        q  = Q()
-        q &= Q(id__in = request.GET.getlist('cart_id'))
-        q &= Q(user = request.user)
+        cart_ids   = request.GET.getlist('cart_id')
+        carts      = Cart.objects.filter(id__in = cart_ids)
+        user_carts = Cart.objects.filter(user = request.user)
 
-        Cart.objects.filter(q).delete()
+        if carts.exclude(user = request.user):
+            return JsonResponse({'message' : 'Invalid Cart'}, status = 400)
+
+        user_carts.delete()
 
         return JsonResponse({'message' : 'No Content'}, status = 204)
