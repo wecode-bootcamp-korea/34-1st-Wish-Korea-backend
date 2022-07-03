@@ -1,0 +1,30 @@
+# Wish Korea
+### [Lush Korea 방문하기](https://www.lush.co.kr/main/index.php)   
+***
+# Introduction
+
+개발 기간 : 2022년 6월 20일 ~ 2022년 7월 1일(2주간)    
+## Developres :
+* Front-end : [하상원](https://github.com/hasangwon), [우혜림](https://github.com/wooohyerim), [안중영](https://github.com/Ahnjungyoung), [정예지](https://github.com/dingwan0331)
+* Back-end : [정진관](https://github.com/dingwan0331)   
+# Main page
+![Main_page](https://i.postimg.cc/Bv7zgF4m/2022-07-03-11-52-09.png)
+# Database
+![Database_ERD](https://i.postimg.cc/zX3V2ZCp/2022-07-03-1-33-53.png)   
+#  Feature   
+* 회원가입
+* 로그인
+* 카테고리
+* 리스트
+* 상품상세정보
+* 장바구니 (추가 / 확인 / 삭제 / 수정)
+
+# Technologies
+* Python
+* Django Web Framework
+* AWS EC2,RDS
+* MYSQL
+* Git, Github
+
+# API Documentation
+[Doc_Link](https://grey-crater-811570.postman.co/workspace/My-Workspace~1303e0ea-2786-4902-8534-ef9bb3e7ba17/documentation/21516218-e4ba9f7f-6bec-49bb-b395-182d4775083e)
