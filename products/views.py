@@ -2,10 +2,10 @@ import json
 
 from django.http                import JsonResponse
 from django.views               import View
-from django.db.models           import Count, Q, Sum, Case, When, F
+from django.db.models           import Count, Q, Sum, Case, When, F, Prefetch
 from django.db.models.functions import Coalesce
 
-from products.models import Category, SubCategory, Product
+from products.models import Category, SubCategory, Product,Item
 from orders.models   import Cart
 
 class CategoryView(View):
@@ -58,7 +58,7 @@ class ProductListView(View):
                 stock_sum    = Coalesce(Sum('item__stock'),0),
                 total        = F('stock_sum') - F('quantity_sum'),
                 is_sold_out  = Case(When(total__exact=0, then = True), default = False)
-                ).order_by(sort_set.get(sort_key, 'total'))[offset:offset + limit]
+                ).prefetch_related(Prefetch('item_set', queryset=Item.objects.order_by('price')),'imageurl_set').order_by(sort_set.get(sort_key, 'total'))[offset:offset + limit]
                 
             result = {
                 'products' : [
@@ -71,7 +71,7 @@ class ProductListView(View):
                         'is_only_online'   : product.is_only_online,
                         'is_made_in_korea' : product.is_made_in_korea,
                         'is_sold_out'      : product.is_sold_out,
-                        'price'            : [int(item.price) for item in product.item_set.order_by('price')],
+                        'price'            : [int(item.price) for item in product.item_set.all()],
                         'image_url'        : [image.url for image in product.imageurl_set.all()]
                 } for product in products],
             }
