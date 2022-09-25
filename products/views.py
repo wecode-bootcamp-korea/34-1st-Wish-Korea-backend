@@ -5,7 +5,7 @@ from django.views               import View
 from django.db.models           import Count, Q, Sum, Case, When, F, Prefetch
 from django.db.models.functions import Coalesce
 
-from products.models import Category, SubCategory, Product,Item
+from products.models import Category, SubCategory, Product, Item, ProductComponent
 from orders.models   import Cart
 
 class CategoryView(View):
@@ -87,7 +87,21 @@ class ProductListView(View):
 class ProductView(View):
     def get(self, request, product_id):
         try:
-            product = Product.objects.get(id = product_id)
+            product = Product.objects.prefetch_related(
+                'imageurl_set',
+                Prefetch(
+                    'item_set', 
+                    queryset=Item.objects.annotate(
+                            available_stock = F('stock')-Coalesce(Sum('cart__quantity'), 0)
+                        )
+                        .select_related('size').order_by('size__size_g')
+                    ),
+                Prefetch(
+                    'productcomponent_set',
+                    queryset=ProductComponent.objects.select_related('component').all()
+                    )
+                ).get(id = product_id)
+            
             result = {
                 'product_id' : product_id,
                 'name'       : product.name,
@@ -95,19 +109,19 @@ class ProductView(View):
                 'image'      : [image.url for image in product.imageurl_set.all()],
                 'components' : [
                     {
-                        'id'        : component.id,
-                        'name'      : component.name,
-                        'important' : component.productcomponent_set.get(product_id = product_id).important
-                    } for component in product.component.all()
+                        'id'        : product_component.component_id,
+                        'name'      : product_component.component.name,
+                        'important' : product_component.important
+                    } for product_component in product.productcomponent_set.all()
                 ],
                 'items' : [
                     {   
                         'id'     : item.id,
                         'size_g' : item.size.size_g,
                         'price'  : int(item.price),
-                        'stock'  : item.stock - Cart.objects.filter(item_id = item.id).aggregate(stock = Coalesce(Sum('quantity'), 0))['stock'],
+                        'stock'  : item.available_stock,
                         'image'  : item.image_url
-                    }for item in product.item_set.order_by('size__size_g')
+                    }for item in product.item_set.all()
                 ] 
             }
             
