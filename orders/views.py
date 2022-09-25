@@ -30,7 +30,10 @@ class CartsView(View):
     @token_decorator
     def get(self, request):
         user   = request.user
-        carts  = Cart.objects.filter(user = user).annotate(qauntity_sum = Sum('item__cart__quantity'))
+        carts  = Cart.objects.filter(user = user)\
+            .annotate(qauntity_sum = Sum('item__cart__quantity'))\
+            .select_related('item__size','item__product__sub_category')
+
         result = {
             'carts' : [
                 {
