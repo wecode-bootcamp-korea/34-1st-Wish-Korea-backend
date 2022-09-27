@@ -42,7 +42,7 @@ class CategoryView(View):
 
         return JsonResponse({'result' : result}, status = 200)
 
-class ProductListView(View):
+class ProductsView(View):
     def get(self, request):
         try:
             category_id     = request.GET.get('category_id')
