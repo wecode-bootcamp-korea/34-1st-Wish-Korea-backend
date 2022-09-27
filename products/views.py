@@ -68,7 +68,12 @@ class ProductsView(View):
                 stock_sum    = Coalesce(Sum('item__stock'),0),
                 total        = F('stock_sum') - F('quantity_sum'),
                 is_sold_out  = Case(When(total__exact=0, then = True), default = False)
-                ).prefetch_related(Prefetch('item_set', queryset=Item.objects.order_by('price')),'imageurl_set').order_by(sort_set.get(sort_key, 'total'))[offset:offset + limit]
+            ).prefetch_related(
+                'imageurl_set',
+                Prefetch('item_set', queryset=Item.objects.order_by('price'))
+            ).order_by(
+                sort_set.get(sort_key, 'total')
+            )[offset:offset + limit]
                 
             result = {
                 'products' : [
