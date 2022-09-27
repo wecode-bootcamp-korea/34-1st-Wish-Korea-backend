@@ -11,9 +11,16 @@ from orders.models   import Cart
 class CategoryView(View):
     def get(self, request):
         categories = Category.objects.all().annotate(
-            product_counts=Count("subcategory__product__id")
-            ).prefetch_related('subcategory_set__product_set')
-            
+            product_counts = Count("subcategory__product__id")
+            ).prefetch_related(
+            Prefetch(
+                'subcategory_set',
+                queryset = SubCategory.objects.annotate(
+                    product_counts=Count("product__id")
+                )
+            )
+        )
+        
         result = [
             {
                 'category_id'    : category.id, 
@@ -27,7 +34,7 @@ class CategoryView(View):
                         'name'           : sub_category.name,
                         'content'        : sub_category.content,
                         'image_url'      : sub_category.image_url,
-                        'products_count' : sub_category.product_set.all().count() 
+                        'products_count' : sub_category.product_counts 
                     } for sub_category in category.subcategory_set.all()
                 ] 
             } for category in categories
