@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import pymysql
 
 from pathlib     import Path
-from my_settings import DATABASES, SECRET_KEY,ALGORITHM
+from my_settings import DATABASES, SECRET_KEY,ALGORITHM, LOGGING
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -155,20 +155,4 @@ pymysql.install_as_MySQLdb()
 
 ALGORITHM = ALGORITHM
 
-# LOGGING = {
-#     'disable_existing_loggers': False,
-#     'version': 1,
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'level': 'DEBUG',
-#         },
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#     },
-# }
+LOGGING = LOGGING
